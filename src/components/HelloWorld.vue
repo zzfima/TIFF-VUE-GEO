@@ -1,58 +1,43 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-container>
+    <v-flex sx4>
+      <input type="file" name="tiff-file" id="tiff-file" accept="image/tiff" required @change="readTIFF" />
+      <div id="preview">
+        <img v-if="imageData" :src="imageData" />
+      </div>
+      <v-text-field label="bbox" v-model="bbox" />
+      <v-text-field label="pixelWidth" v-model="pixelWidth" />
+      <v-text-field label="pixelHeight" v-model="pixelHeight" />
+    </v-flex>
+  </v-container>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+import { get_tiff_image } from "./tiff_parser";
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+export default {
+  name: "HelloWorld",
+
+  data: () => ({
+    imageData: "", // we will store base64 format of image in this string
+    bbox: 0,
+    pixelWidth: 0,
+    pixelHeight: 0,
+  }),
+  methods: {
+    readTIFF() {
+      var files = document.getElementById("tiff-file").files;
+      var file = files[0];
+      console.log(file.type);
+
+      this.imageData = URL.createObjectURL(file);
+
+      get_tiff_image(file).then((image) => {
+        this.bbox = image.getBoundingBox();
+        this.pixelWidth = image.getWidth();
+        this.pixelHeight = image.getHeight();
+      });
+    },
+  },
+};
+</script>
