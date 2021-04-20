@@ -4,6 +4,7 @@
       <input type="file" name="tiff-file" id="tiff-file" accept="image/tiff" required @change="readTIFF" />
       <div id="preview">
         <img v-if="imageData" :src="imageData" />
+        <canvas id="plot"></canvas>
       </div>
       <v-text-field label="BoundingBox" v-model="BoundingBox" />
       <v-text-field label="Origin" v-model="Origin" />
@@ -19,6 +20,7 @@
 
 <script>
 import { get_tiff_image } from "./tiff_parser";
+import { plot } from "plotty";
 
 export default {
   name: "TIFFVisualizer",
@@ -60,6 +62,21 @@ export default {
         this.TileWidth = image.getTileWidth();
         this.TileHeight = image.getTileHeight();
         this.SamplesPerPixel = image.getSamplesPerPixel();
+
+        var w = this.Width;
+        var h = this.Height;
+        (async function () {
+          const data = await image.readRasters();
+          const canvas = document.getElementById("plot");
+          new plot({
+            canvas,
+            data: data[0],
+            width: w,
+            height: h,
+            domain: [0, 256],
+            colorScale: "viridis",
+          }).render();
+        })();
       });
     },
   },
