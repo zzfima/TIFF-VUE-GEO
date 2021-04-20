@@ -2,10 +2,7 @@
   <v-container>
     <v-flex sx4>
       <input type="file" name="tiff-file" id="tiff-file" accept="image/tiff" required @change="readTIFF" />
-      <div id="preview">
-        <img v-if="imageData" :src="imageData" />
-        <canvas id="plot"></canvas>
-      </div>
+      <canvas id="plot"></canvas>
       <v-text-field label="BoundingBox" v-model="BoundingBox" />
       <v-text-field label="Origin" v-model="Origin" />
       <v-text-field label="Resolution" v-model="Resolution" />
@@ -63,16 +60,16 @@ export default {
         this.TileHeight = image.getTileHeight();
         this.SamplesPerPixel = image.getSamplesPerPixel();
 
-        var w = this.Width;
-        var h = this.Height;
+        var width = this.Width;
+        var height = this.Height;
         (async function () {
           const data = await image.readRasters();
           const canvas = document.getElementById("plot");
           new plot({
             canvas,
             data: data[0],
-            width: w,
-            height: h,
+            width: width,
+            height: height,
             domain: [0, 256],
             colorScale: "viridis",
           }).render();
