@@ -14,19 +14,19 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld />
+      <TIFFVisualizer />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import TIFFVisualizer from "./components/TIFFVisualizer";
 
 export default {
   name: "App",
 
   components: {
-    HelloWorld,
+    TIFFVisualizer,
   },
 
   data: () => ({

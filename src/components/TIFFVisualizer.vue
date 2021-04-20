@@ -21,7 +21,7 @@
 import { get_tiff_image } from "./tiff_parser";
 
 export default {
-  name: "HelloWorld",
+  name: "TIFFVisualizer",
 
   data: () => ({
     imageData: "", // we will store base64 format of image in this string
