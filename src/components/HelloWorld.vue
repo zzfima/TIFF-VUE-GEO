@@ -5,9 +5,14 @@
       <div id="preview">
         <img v-if="imageData" :src="imageData" />
       </div>
-      <v-text-field label="bbox" v-model="bbox" />
-      <v-text-field label="pixelWidth" v-model="pixelWidth" />
-      <v-text-field label="pixelHeight" v-model="pixelHeight" />
+      <v-text-field label="BoundingBox" v-model="BoundingBox" />
+      <v-text-field label="Origin" v-model="Origin" />
+      <v-text-field label="Resolution" v-model="Resolution" />
+      <v-text-field label="Width" v-model="Width" />
+      <v-text-field label="Height" v-model="Height" />
+      <v-text-field label="TileWidth" v-model="TileWidth" />
+      <v-text-field label="TileHeight" v-model="TileHeight" />
+      <v-text-field label="SamplesPerPixel" v-model="SamplesPerPixel" />
     </v-flex>
   </v-container>
 </template>
@@ -20,12 +25,26 @@ export default {
 
   data: () => ({
     imageData: "", // we will store base64 format of image in this string
-    bbox: 0,
-    pixelWidth: 0,
-    pixelHeight: 0,
+    BoundingBox: 0,
+    Origin: 0,
+    Resolution: 0,
+    Width: 0,
+    Height: 0,
+    TileWidth: 0,
+    TileHeight: 0,
+    SamplesPerPixel: 0,
   }),
   methods: {
     readTIFF() {
+      this.BoundingBox = 0;
+      this.Origin = 0;
+      this.Resolution = 0;
+      this.Width = 0;
+      this.Height = 0;
+      this.TileWidth = 0;
+      this.TileHeight = 0;
+      this.SamplesPerPixel = 0;
+
       var files = document.getElementById("tiff-file").files;
       var file = files[0];
       console.log(file.type);
@@ -33,9 +52,14 @@ export default {
       this.imageData = URL.createObjectURL(file);
 
       get_tiff_image(file).then((image) => {
-        this.bbox = image.getBoundingBox();
-        this.pixelWidth = image.getWidth();
-        this.pixelHeight = image.getHeight();
+        this.BoundingBox = image.getBoundingBox();
+        this.Origin = image.getOrigin();
+        this.Resolution = image.getResolution();
+        this.Width = image.getWidth();
+        this.Height = image.getHeight();
+        this.TileWidth = image.getTileWidth();
+        this.TileHeight = image.getTileHeight();
+        this.SamplesPerPixel = image.getSamplesPerPixel();
       });
     },
   },
